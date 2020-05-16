@@ -1,0 +1,127 @@
+{% extends "layout.html" %}
+  {% if current_user.is_authenticated %}
+  {% block title %}EZrecipe: {{ current_user.username }}{% endblock %}
+  {% endif %}
+  {% block style %}
+  
+  {% endblock %}
+{{ super() }}
+
+{% block content %}
+  {% if current_user.is_authenticated %}
+   <h3 style="text-align:center"> Welcome {{ current_user.username }}! </h3>
+  {% endif %}
+<h4 style="text-align:center;">View your grocery list here<h4>
+  <p style="text-align:center ; font-size: 14px;"><i>click on an ingredient in recipes too make is disappear</i><p>
+      <p style="text-align:center;  font-size: 14px;"><i>scroll stright down in recipe instrustions too see them</i><p>
+</div>
+<div class="container my-4">
+
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+  <li class="nav-item">
+    <a class="nav-link active"  id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Recipes</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact"  role="tab" aria-controls="contact" aria-selected="false">Recipe Instructions</a>
+  </li>
+</ul>
+<div class="tab-content" id="myTabContent">
+  <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab"><div id="lists" class="list-group">
+</div></div>
+  <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab"><div class="list-group" id="ins"></div></div>
+
+
+
+
+</div>
+
+<script>
+server = "https://project-3--kirtondavid53.repl.co";
+i = getIngredients();
+firstins = 0;
+firstrec = 0;
+function rec(){
+  if(firstrec===0){
+    alert('Click on an ingredient too make it disappear.');
+  }
+  firstrec= 1;
+}
+function ins(){
+if(firstins===0){
+  alert('Scroll stright down for recipe instructions.');
+}
+firstins = 1;
+}
+
+function getIngredients(){
+  var storedI = JSON.parse(localStorage.getItem("ingredientIDs"));
+  console.log(storedI);
+  return storedI;
+}
+function removeElement(elementId) {
+    // Removes an element from the document
+    var element = document.getElementById(elementId);
+    element.parentNode.removeChild(element);
+}
+
+async function displaylist(){
+ var lists = document.getElementById("lists");
+ var ins = document.getElementById("ins");
+ 
+ for (recipe of i ){
+   console.log("i: "+i);
+   console.log("recipe: "+recipe)
+   data = await getrecipeinfo(recipe);
+  console.log(data);
+   // for( ingredient of result.extendedIngredients){
+     // data = {
+      //aisle: ingredient.aisle,
+      //image: ingredient.image,
+      //name: ingredient.name,
+      //amount: ingredient.amount,
+      //unit: ingredient.unit,
+      //Listname: m
+   //}  
+   //
+   x = data.extendedIngredients;
+   y= data.analyzedInstructions[0].steps;
+    lists.innerHTML+= `<h2>${data.title}</h2>`;
+    ins.innerHTML+= `<h2>${data.title}</h2><br/>`;
+  for(i of y){
+     ins.innerHTML+= `<a href="#" class="list-group-item list-group-item-action">${i.number}.) ${i.step}</a>`
+  }
+     
+   for(dat of x){
+   lists.innerHTML+=`
+   <a href="#" id ="${dat.id}" class="list-group-item list-group-item-action"  onclick="removeElement(${dat.id})">name: ${dat.name}    amount: ${dat.amount}    unit: ${dat.unit}    aisle: ${dat.aisle}</a>
+  `
+  // <div id="${data.id}"><p>name: ${dat.name}  amount: ${dat.amount} unit: ${dat.unit} aisle: ${dat.aisle}</p></div> 
+   //>`
+   
+   }
+  // lists.innerHTML+=`<br/>`;
+ }
+}
+/*
+function removeIngredient(){
+  var storedI = JSON.parse(localStorage.getItem("ingredientIDs"));
+  
+
+}
+*/
+async function getrecipeinfo(id){
+   url =`https://api.spoonacular.com/recipes/${id}/information?includeNutrition=0&apiKey=d4f7c4162527415da479bbe97794c40a`;
+   try{
+     let response = await fetch(url);//1. Send http request and get response
+     let result = await response.json();//2. Get data from response
+     return result;// 3. Do something with the data
+  }catch(e){
+      console.log(e);//catch and log any errors
+  }
+}
+displaylist();
+
+
+
+</script>
+{% endblock %}

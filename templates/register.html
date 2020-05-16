@@ -1,0 +1,133 @@
+ {% extends "layout.html" %}
+{% block title %}EZrecipe: Sign Up{% endblock %}
+{{ super() }}
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='reg4.css') }}">
+<div>
+  	<div class="container">
+			<div class="row main">
+				<div class="panel-heading">
+	               <div class="panel-title text-center">
+	               		<h1 style="font-family: "Arial", Helvetica, sans-serif;" class="title">Create an account</h1>
+	               	</div>
+	            </div> 
+				<div class="main-login main-center">
+					<form id= "myForm"class="form-horizontal" method="post" action="#">
+						
+						<div class="form-group">
+							<label for="name" class="cols-sm-2 control-label">Your Name</label>
+							<div class="cols-sm-10">
+								<div class="input-group">
+									<span class="input-group-addon"><i class="fa fa-user fa" aria-hidden="true"></i></span>
+									<input type="text" class="form-control" name="name" id="name"  placeholder="Enter your Name"/>
+								</div>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label for="email" class="cols-sm-2 control-label">Your Email</label>
+							<div class="cols-sm-10">
+								<div class="input-group">
+									<span class="input-group-addon"><i class="fa fa-envelope fa" aria-hidden="true"></i></span>
+									<input type="text" class="form-control" name="email" id="email"  placeholder="Enter your Email" required/>
+								</div>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label for="username" class="cols-sm-2 control-label">Username</label>
+							<div class="cols-sm-10">
+								<div class="input-group">
+									<span class="input-group-addon"><i class="fa fa-users fa" aria-hidden="true"></i></span>
+									<input type="text" class="form-control" name="username" id="username"  placeholder="Enter your Username"  minlength="8" required/>
+								</div>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label for="password" class="cols-sm-2 control-label">Password</label>
+							<div class="cols-sm-10">
+								<div class="input-group">
+									<span class="input-group-addon"><i class="fa fa-lock fa-lg" aria-hidden="true"></i></span>
+									<input type="password" class="form-control" name="password" id="password"  placeholder="Enter your Password" required pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$"/>
+								</div>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label for="confirm" class="cols-sm-2 control-label">Confirm Password</label>
+							<div class="cols-sm-10">
+								<div class="input-group">
+									<span class="input-group-addon"><i class="fa fa-lock fa-lg" aria-hidden="true"></i></span>
+									<input type="password" class="form-control" name="confirm" id="confirm"  placeholder="Confirm your Password" required pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$"/>
+								</div>
+							</div>
+						</div>
+
+						<div class="form-group ">
+							<button type="submit" class="btn btn-primary btn-lg btn-block login-button">Register</button>
+						</div>
+						<div class="login-register">
+				            <a href="/Login">Login</a>
+				         </div>
+					</form>
+				</div>
+			</div>
+		</div>
+    <script>
+      var server = "https://project-3--kirtondavid53.repl.co"
+ 
+      async function postData(url, data){
+  try{
+
+     let response = await fetch(
+       url, 
+       {
+            method: 'POST',
+            body: JSON.stringify(data),//convert data to JSON string
+          headers: { 'Content-Type':'application/json' }// JSON data
+       },
+     );//1. Send http request and get response
+     
+     let result = await response.text();//2. Get message from response
+     console.log(result);//3. Do something with the message
+     alert(result);
+   
+   }catch(error){
+     console.log(error);//catch and log any errors
+   }
+}
+
+
+    //the Event object is passed to any event handler called via an event attribute eg onclick, onsubmit etc
+function submit(event){
+ event.preventDefault();//prevents page redirection
+     
+ //event target returns the element on which the event is fired upon ie event.target === myForm
+
+ //get data from form using elements property
+ let myform = event.target.elements;
+
+ let data = {
+   name : myform['name'].value,
+   username: myform['username'].value,
+   password: myform['password'].value,
+   email: myform['email'].value,
+   confirm: myform['confirm'].value
+ }
+ //send data to an api endpoint expecting the data
+ if(myform['password'].value===myform['confirm'].value){
+ postData(server+"/signup", data);
+ myForm.reset();
+ 
+ }
+else{
+  alert("please make sure your passwords match and try again");
+}
+ //clears the fields of the form
+}
+
+//attach the submit function to the submit event of myForm    
+document.forms['myForm'].addEventListener('submit', submit);
+    </script>
+{% endblock %}
