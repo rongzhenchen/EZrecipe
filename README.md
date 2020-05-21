@@ -3,5 +3,4 @@ It pulls data from the Spoonacular recipe api using an authorized key.
 
 https://gitpod.io/#https://github.com/rongzhenchen/EZrecipe.git
 
-We wanted to deploy it on Heroku but we encountered many errors, so we could not. :(
-So, we just used the repl.it environment that we worked on to deploy the site,
+Heroku url : https://powerful-beyond-18286.herokuapp.com/
